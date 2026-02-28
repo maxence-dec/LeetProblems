@@ -33,7 +33,7 @@ usage_status() {
     echo ""
     echo "Command status"
     echo "Update a problem status in readme/metadata"
-    echo "Usage:    leet-problem status <slug> <value>"
+    echo "Usage:    leet-problem status <slug | url> <value>"
     echo "Values:"
     for code in $(echo "${!STATUS[@]}" | tr ' ' '\n' | sort -n); do
         echo "  $code — ${STATUS[$code]}"
