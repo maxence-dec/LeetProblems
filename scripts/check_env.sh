@@ -9,7 +9,6 @@ fail=0
 for tool in "${REQUIRED[@]}"; do
     if ! command -v "$tool" &>/dev/null; then
         echo "[MISSING required] $tool"
-        hint "$tool"
         fail=1
     fi
 done

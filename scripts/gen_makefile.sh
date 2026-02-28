@@ -9,13 +9,6 @@ PROB_DIR="$REPO_ROOT/problems/$SLUG"
 
 MAKEFILE="$PROB_DIR/Makefile"
 
-all_targets=""
-
-add_target() {
-    local lang="$1"
-    all_targets="$all_targets $lang"
-}
-
 emit_c() {
     cat <<'EOF'
 build-c:
@@ -55,8 +48,7 @@ build-csharp:
 	elif command -v mcs >/dev/null 2>&1; then mcs solution.cs; \
 	else echo "No C# compiler found"; exit 1; fi
 test-csharp: build-csharp
-	@if com
-CONTENT_HTML=$(jq -r '.content // ""' "$CACHE_FILE")mand -v dotnet >/dev/null 2>&1; then dotnet test; \
+	@if command -v dotnet >/dev/null 2>&1; then dotnet test; \
 	else echo "Run manually with mono"; fi
 clean-csharp:
 	rm -f *.exe

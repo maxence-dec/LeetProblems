@@ -2,25 +2,29 @@
 # shellcheck source=./scripts/constants.sh
 
 set -euo pipefail
-source ./scripts/constants.sh
+SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/scripts" && pwd)"
+source "$SCRIPTS_DIR/constants.sh"
 
 usage_intro(){
-    echo "leet-problem - custom cli tool for leet code file management"
+    local exit_after="${1:-0}"
+    echo "leet-problem - custom CLI tool for LeetCode file management"
     echo "Usage: leet-problem [--help]"
     echo "                    <command> [<arguments>]"
-    echo "  new     Add a problem, generate files and update readme/meta datas"
-    echo "  status  Update a problem status in readme/meta datas"
+    echo "  new     Add a problem, generate files and update readme/metadata"
+    echo "  status  Update a problem status in readme/metadata"
     echo ""
     [[ $1 -eq 1 ]] && echo "leet-problem <command> --help"
-    [[ $1 -eq 1 ]] && echo "  Get detail for specific command use"
-    [[ $1 -eq 1 ]] && exit 1
+    [[ $1 -eq 1 ]] && echo "  Get details for a specific command use"
+    [[ $exit_after -eq 1 ]] && exit 1
     echo ""
 }
 
 usage_new() {
-    [[ $1 -eq 1 ]] && echo "leet-problem - custom cli tool for leet code file management"
+    [[ $1 -eq 1 ]] && echo "leet-problem - custom CLI tool for LeetCode file management"
     echo ""
     echo "Command new"
+    echo "Add a problem, generate files and update readme/metadata"
+    echo ""
     echo "Usage:    leet-problem new <leetcode-url> [lang...]"
     echo "Languages: c  cpp  python  csharp  mysql"
     echo ""
@@ -28,9 +32,11 @@ usage_new() {
 }
 
 usage_status() {
-    [[ $1 -eq 1 ]] && echo "leet-problem - custom cli tool for leet code file management"
+    [[ $1 -eq 1 ]] && echo "leet-problem - custom CLI tool for LeetCode file management"
     echo ""
-    echo "Command update"
+    echo "Command status"
+    echo "Update a problem status in readme/metadata"
+    echo ""
     echo "Usage:    leet-problem status <slug> <value>"
     echo "Values:"
     for code in $(echo "${!STATUS[@]}" | tr ' ' '\n' | sort -n); do
@@ -50,23 +56,21 @@ usage_all(){
 FUNCTION_ARG="$1"
 shift
 
-SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/scripts" && pwd)"
-
 case "$FUNCTION_ARG" in
         new)
-            if [[ $# -lt 2 || $1 = "--help" ]]; then
+            if [[ $# -lt 2 || $1 == "--help" ]]; then
                 usage_new 1
             else
                 echo "[leet-problem] Adding new problem"
-                "$SCRIPTS_DIR/new_problem.sh" "$@"
+                "$SCRIPT_DIR/new_problem.sh" "$@"
             fi
             ;;
         status)
-            if [[ $# -lt 2 ||  $1 = "--help" ]]; then
+            if [[ $# -lt 2 ||  $1 == "--help" ]]; then
                 usage_status 1
             else
                 echo "[leet-problem] Updating status"
-                "$SCRIPTS_DIR/status_update.sh" "$@"
+                "$SCRIPT_DIR/status_update.sh" "$@"
             fi
             ;;
         --help)

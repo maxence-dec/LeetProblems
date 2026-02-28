@@ -7,7 +7,7 @@ LANGS=("$@")
 [[ ${#LANGS[@]} -eq 0 ]] && { echo "Usage: scaffold.sh <slug> <lang...>  (c cpp python csharp mysql)" >&2; exit 1; }
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SCRIPTS_DIR="$REPO_ROOT/scripts"
+SCRIPT_DIR="$REPO_ROOT/scripts"
 PROB_DIR="$REPO_ROOT/problems/$SLUG"
 
 if [[ -d "$PROB_DIR" ]]; then
@@ -19,7 +19,7 @@ fi
 mkdir -p "$PROB_DIR"
 echo "[scaffold] Created: $PROB_DIR"
 
-"$SCRIPTS_DIR/fetch_problem.sh" "$SLUG" > /dev/null
+"$SCRIPT_DIR/fetch_problem.sh" "$SLUG" > /dev/null
 
 STUB_C='#include <stdio.h>
 #include <stdlib.h>
@@ -125,5 +125,5 @@ for lang in "${LANGS[@]}"; do
     esac
 done
 
-"$SCRIPTS_DIR/gen_makefile.sh" "$SLUG"
-"$SCRIPTS_DIR/gen_readme_problem.sh" "$SLUG"
+"$SCRIPT_DIR/gen_makefile.sh" "$SLUG"
+"$SCRIPT_DIR/gen_readme_problem.sh" "$SLUG"

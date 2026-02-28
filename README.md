@@ -1,5 +1,5 @@
 <!-- INTRO_START -->
-# Leet Code Personnal Solutions Repository
+# Leet Code Personal Solutions Repository
 <!-- INTRO_END -->
 
 ## Problems

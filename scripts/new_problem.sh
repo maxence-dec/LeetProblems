@@ -10,7 +10,6 @@ shift
 LANGS=("$@")
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 META="$REPO_ROOT/.meta/problems.json"
 
  # --- extract slug from URL ---
@@ -24,10 +23,10 @@ echo "[new-problem] Slug: $SLUG"
 echo "[new-problem] Languages: ${LANGS[*]}"
 
  # --- environment check ---
-"$SCRIPTS_DIR/check_env.sh"
+"$SCRIPT_DIR/check_env.sh"
 
  # --- scaffold problem directory ---
-"$SCRIPTS_DIR/scaffold.sh" "$SLUG" "${LANGS[@]}"
+"$SCRIPT_DIR/scaffold.sh" "$SLUG" "${LANGS[@]}"
 
  # --- update .meta/problems.json ---
 CACHE_FILE="/tmp/lc_cache/${SLUG}.json"
@@ -39,9 +38,9 @@ TOPICS=$(jq -r '[.topicTags[].name]' "$CACHE_FILE")
 LANG_JSON=$(printf '%s\n' "${LANGS[@]}" | jq -R . | jq -s .)
 
 JSON_CONTENT=$(cat "$META")
-ALREADY=$(echo "$JSON_CONTENT" | jq --arg slug "$SLUG" 'map(select(.slug == $slug)) | length')
+MATCH_COUNT=$(echo "$JSON_CONTENT" | jq --arg slug "$SLUG" 'map(select(.slug == $slug)) | length')
 
- if [[ "$ALREADY" -eq 0 ]]; then
+if [[ "$MATCH_COUNT" -eq 0 ]]; then
     echo "$JSON_CONTENT" | jq \
         --arg slug "$SLUG" \
         --arg title "$TITLE" \
@@ -57,7 +56,7 @@ else
 fi
 
  # --- regenerate root README ---
-"$SCRIPTS_DIR/gen_readme_root.sh"
+"$SCRIPT_DIR/gen_readme_root.sh"
 
 echo ""
 echo "[new-problem] Done."

@@ -8,7 +8,7 @@ FORCE=0
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PROB_DIR="$REPO_ROOT/problems/$SLUG"
 README="$PROB_DIR/README.md"
-SCRIPTS_DIR="$REPO_ROOT/scripts"
+SCRIPT_DIR="$REPO_ROOT/scripts"
 
 [[ -d "$PROB_DIR" ]] || { echo "[gen_readme_problem] Directory not found: $PROB_DIR" >&2; exit 1; }
 
@@ -37,7 +37,7 @@ fi
 
 CACHE_FILE="/tmp/lc_cache/${SLUG}.json"
 if [[ ! -f "$CACHE_FILE" ]]; then
-    "$SCRIPTS_DIR/fetch_problem.sh" "$SLUG" > /dev/null
+    "$SCRIPT_DIR/fetch_problem.sh" "$SLUG" > /dev/null
 fi
 
 TITLE=$(jq -r '.title' "$CACHE_FILE")
@@ -56,7 +56,7 @@ cat > "$README" <<EOF
 # ${TITLE} — ${DIFFICULTY}
 
 **Topics:** ${TOPICS}
-**Language.s:** ${LANGS}
+**Language.s:**${LANGS}
 
 ## Problem
 
