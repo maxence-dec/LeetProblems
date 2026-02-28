@@ -20,7 +20,6 @@ mkdir -p "$PROB_DIR"
 echo "[scaffold] Created: $PROB_DIR"
 
 "$SCRIPTS_DIR/fetch_problem.sh" "$SLUG" > /dev/null
-#CACHE_FILE="/tmp/lc_cache/${SLUG}.json"
 
 STUB_C='#include <stdio.h>
 #include <stdlib.h>

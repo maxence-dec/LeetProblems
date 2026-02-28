@@ -24,7 +24,6 @@ test-c: build-c
 	./solution_c
 clean-c:
 	rm -f solution_c
-
 EOF
 }
 
@@ -36,7 +35,6 @@ test-cpp: build-cpp
 	./solution_cpp
 clean-cpp:
 	rm -f solution_cpp
-
 EOF
 }
 
@@ -47,7 +45,6 @@ build-python:
 test-python:
 	@if [ -f solution_test.py ]; then python3 -m pytest solution_test.py -v; else python3 -m py_compile solution.py && echo "syntax ok"; fi
 clean-python:
-
 EOF
 }
 
@@ -63,7 +60,6 @@ CONTENT_HTML=$(jq -r '.content // ""' "$CACHE_FILE")mand -v dotnet >/dev/null 2>
 	else echo "Run manually with mono"; fi
 clean-csharp:
 	rm -f *.exe
-
 EOF
 }
 
@@ -74,7 +70,6 @@ build-mysql:
 test-mysql:
 	@echo "SQL: run solution.sql manually against a MySQL instance"
 clean-mysql:
-
 EOF
 }
 

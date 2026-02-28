@@ -1,126 +1,80 @@
 #!/usr/bin/env bash
+# shellcheck source=./scripts/constants.sh
+
 set -euo pipefail
+source ./scripts/constants.sh
 
-declare -A STATUS
-STATUS[0]="new"
-STATUS[1]="in-progress"
-STATUS[2]="solved"
-STATUS[3]="abandoned"
-
-usage() {
-    echo "Usage: leet-problem <leetcode-url> <lang...>"
-    echo "       leet-problem https://leetcode.com/problems/two-sum/ c cpp"
-    echo "Languages: c  cpp  python  csharp  mysql"
-    exit 1
-}
-
-new_problem() {
-    [[ $# -lt 2 ]] && usage
-
-    URL="$1"
-    shift
-    LANGS=("$@")
-
-    REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    SCRIPTS_DIR="$REPO_ROOT/scripts"
-    META="$REPO_ROOT/.meta/problems.json"
-
-    # --- extract slug from URL ---
-    SLUG=$(echo "$URL" | sed -E 's|https?://leetcode\.com/problems/([^/]+)/?.*|\1|')
-    if [[ "$SLUG" == "$URL" ]]; then
-        echo "[leet-problem] Could not extract slug from URL: $URL" >&2
-        exit 1
-    fi
-
-    echo "[leet-problem] Slug: $SLUG"
-    echo "[leet-problem] Languages: ${LANGS[*]}"
-
-    # --- environment check ---
-    "$SCRIPTS_DIR/check_env.sh"
-
-    # --- scaffold problem directory ---
-    "$SCRIPTS_DIR/scaffold.sh" "$SLUG" "${LANGS[@]}"
-
-    # --- update .meta/problems.json ---
-    CACHE_FILE="/tmp/lc_cache/${SLUG}.json"
-
-    TITLE=$(jq -r '.title' "$CACHE_FILE")
-    DIFFICULTY=$(jq -r '.difficulty' "$CACHE_FILE")
-    TOPICS=$(jq -r '[.topicTags[].name]' "$CACHE_FILE")
-
-    LANG_JSON=$(printf '%s\n' "${LANGS[@]}" | jq -R . | jq -s .)
-
-    JSON_CONTENT=$(cat "$META")
-    ALREADY=$(echo "$JSON_CONTENT" | jq --arg slug "$SLUG" 'map(select(.slug == $slug)) | length')
-
-    if [[ "$ALREADY" -eq 0 ]]; then
-        echo "$JSON_CONTENT" | jq \
-            --arg slug "$SLUG" \
-            --arg title "$TITLE" \
-            --arg difficulty "$DIFFICULTY" \
-            --argjson topics "$TOPICS" \
-            --argjson languages "$LANG_JSON" \
-            '. + [{slug: $slug, title: $title, difficulty: $difficulty, topics: $topics, languages: $languages, status: "in-progress"}]' \
-            > "$META.tmp" && mv "$META.tmp" "$META"
-        echo "[leet-problem] Added to problems.json"
-    else
-        echo "[leet-problem] Slug already in problems.json — skipping JSON update"
-    fi
-
-    # --- regenerate root README ---
-    "$SCRIPTS_DIR/gen_readme_root.sh"
-
+usage_intro(){
+    echo "leet-problem - custom cli tool for leet code file management"
+    echo "Usage: leet-problem [--help]"
+    echo "                    <command> [<arguments>]"
+    echo "  new     Add a problem, generate files and update readme/meta datas"
+    echo "  status  Update a problem status in readme/meta datas"
     echo ""
-    echo "[leet-problem] Done."
-    echo "  Problem dir : $REPO_ROOT/problems/$SLUG/"
-    echo "  Next steps  : edit problems/$SLUG/README.md, write solution, run 'make test'"
+    [[ $1 -eq 1 ]] && echo "leet-problem <command> --help"
+    [[ $1 -eq 1 ]] && echo "  Get detail for specific command use"
+    [[ $1 -eq 1 ]] && exit 1
+    echo ""
 }
 
-status_update(){
-    [[ $# -lt 1 ]] && usage
-
-    NEW_STATUS="${STATUS[$1]:-}"
-    [[ -z "$NEW_STATUS" ]] && { echo "Unknown status code: $2"; exit 1; }
-
-    SLUG=$(basename "$(pwd)")
-
-    REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    SCRIPTS_DIR="$REPO_ROOT/scripts"
-    META="$REPO_ROOT/.meta/problems.json"
-
-    JSON_CONTENT=$(cat "$META")
-    ALREADY=$(echo "$JSON_CONTENT" | jq --arg slug "$SLUG" 'map(select(.slug == $slug)) | length')
-
-    if [[ "$ALREADY" -ne 0 ]]; then
-        OLD_STATUS=$(echo "$JSON_CONTENT" | jq --arg slug "$SLUG" 'map(select(.slug == $slug) | .status)')
-        echo "$JSON_CONTENT" | jq \
-            --arg slug "$SLUG" \
-            --arg status "$NEW_STATUS" \
-            '(.[] | select(.slug == $slug) | .status) |= $status' \
-            > "$META.tmp" && mv "$META.tmp" "$META"
-        echo "[leet-problem] Update to problems.json, $SLUG from $OLD_STATUS to $NEW_STATUS"
-    else
-        echo "[leet-problem] Slug $SLUG no found in problems.json — skipping JSON update"
-    fi
+usage_new() {
+    [[ $1 -eq 1 ]] && echo "leet-problem - custom cli tool for leet code file management"
+    echo ""
+    echo "Command new"
+    echo "Usage:    leet-problem new <leetcode-url> [lang...]"
+    echo "Languages: c  cpp  python  csharp  mysql"
+    echo ""
+    echo "Example: leet-problem new https://leetcode.com/problems/two-sum/ c cpp"
 }
 
+usage_status() {
+    [[ $1 -eq 1 ]] && echo "leet-problem - custom cli tool for leet code file management"
+    echo ""
+    echo "Command update"
+    echo "Usage:    leet-problem status <slug> <value>"
+    echo "Values:"
+    for code in $(echo "${!STATUS[@]}" | tr ' ' '\n' | sort -n); do
+        echo "  $code — ${STATUS[$code]}"
+    done
+    echo ""
+    echo "Example: leet-problem status insert-delete-getrandom-o1 2"
+}
 
-[[ $# -lt 1 ]] && usage
+usage_all(){
+    usage_intro 0
+    usage_new 0
+    usage_status 0
+}
 
+[[ $# -eq 0 ]] && usage_intro 1
 FUNCTION_ARG="$1"
 shift
 
+SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/scripts" && pwd)"
+
 case "$FUNCTION_ARG" in
         new)
-            echo "[leet-problem] Adding new problem"
-            new_function "$@"
+            if [[ $# -lt 2 || $1 = "--help" ]]; then
+                usage_new 1
+            else
+                echo "[leet-problem] Adding new problem"
+                "$SCRIPTS_DIR/new_problem.sh" "$@"
+            fi
             ;;
         status)
-            echo "[leet-problem] Updating $(basename "$(pwd)") status"
-            status_update "$@"
+            if [[ $# -lt 2 ||  $1 = "--help" ]]; then
+                usage_status 1
+            else
+                echo "[leet-problem] Updating status"
+                "$SCRIPTS_DIR/status_update.sh" "$@"
+            fi
+            ;;
+        --help)
+            usage_all
             ;;
         *)
-            echo "[scaffold] Unknown argument"
+            echo "[leet-problem] Unknown argument, refer to --help"
             exit 1
             ;;
     esac
+exit 0

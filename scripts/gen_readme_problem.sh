@@ -56,7 +56,7 @@ cat > "$README" <<EOF
 # ${TITLE} — ${DIFFICULTY}
 
 **Topics:** ${TOPICS}
-**Languages:** ${LANGS}
+**Language.s:** ${LANGS}
 
 ## Problem
 
