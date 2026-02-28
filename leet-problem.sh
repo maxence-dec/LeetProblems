@@ -12,7 +12,6 @@ usage_intro(){
     echo "                    <command> [<arguments>]"
     echo "  new     Add a problem, generate files and update readme/metadata"
     echo "  status  Update a problem status in readme/metadata"
-    echo ""
     [[ $1 -eq 1 ]] && echo "leet-problem <command> --help"
     [[ $1 -eq 1 ]] && echo "  Get details for a specific command use"
     [[ $exit_after -eq 1 ]] && exit 1
@@ -24,10 +23,8 @@ usage_new() {
     echo ""
     echo "Command new"
     echo "Add a problem, generate files and update readme/metadata"
-    echo ""
     echo "Usage:    leet-problem new <leetcode-url> [lang...]"
     echo "Languages: c  cpp  python  csharp  mysql"
-    echo ""
     echo "Example: leet-problem new https://leetcode.com/problems/two-sum/ c cpp"
 }
 
@@ -36,13 +33,11 @@ usage_status() {
     echo ""
     echo "Command status"
     echo "Update a problem status in readme/metadata"
-    echo ""
     echo "Usage:    leet-problem status <slug> <value>"
     echo "Values:"
     for code in $(echo "${!STATUS[@]}" | tr ' ' '\n' | sort -n); do
         echo "  $code — ${STATUS[$code]}"
     done
-    echo ""
     echo "Example: leet-problem status insert-delete-getrandom-o1 2"
 }
 
