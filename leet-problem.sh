@@ -2,8 +2,8 @@
 # shellcheck source=./scripts/constants.sh
 
 set -euo pipefail
-SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/scripts" && pwd)"
-source "$SCRIPTS_DIR/constants.sh"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/scripts" && pwd)"
+source "$SCRIPT_DIR/constants.sh"
 
 usage_intro(){
     local exit_after="${1:-0}"

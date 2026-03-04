@@ -1,7 +1,7 @@
-# Regular Expression Matching — Hard
+# Two Sum — Easy
 
-**Topics:** String, Dynamic Programming, Recursion
-**Language.s:**  C++
+**Topics:** Array, Hash Table
+**Language.s:** C#
 
 ## Problem
 
@@ -19,5 +19,5 @@ Time: O(?)  — Space: O(?)
 
 ## Implementation Notes
 
-### C++
+### C#
 

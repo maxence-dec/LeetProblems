@@ -1,32 +1,15 @@
 [
   {
-    "slug": "insert-delete-getrandom-o1",
-    "title": "Insert Delete GetRandom O(1)",
-    "difficulty": "Medium",
+    "slug": "two-sum",
+    "title": "Two Sum",
+    "difficulty": "Easy",
     "topics": [
       "Array",
-      "Hash Table",
-      "Math",
-      "Design",
-      "Randomized"
+      "Hash Table"
     ],
     "languages": [
-      "c"
+      "csharp"
     ],
-    "status": "in-progress"
-  },
-  {
-    "slug": "regular-expression-matching",
-    "title": "Regular Expression Matching",
-    "difficulty": "Hard",
-    "topics": [
-      "String",
-      "Dynamic Programming",
-      "Recursion"
-    ],
-    "languages": [
-      "cpp"
-    ],
-    "status": "new"
+    "status": "solved-and-upgrading"
   }
 ]
