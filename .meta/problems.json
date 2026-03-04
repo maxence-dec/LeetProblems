@@ -491,5 +491,18 @@
       "csharp"
     ],
     "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "xor-after-range-multiplication-queries-ii",
+    "title": "XOR After Range Multiplication Queries II",
+    "difficulty": "Hard",
+    "topics": [
+      "Array",
+      "Divide and Conquer"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "abandoned"
   }
 ]
