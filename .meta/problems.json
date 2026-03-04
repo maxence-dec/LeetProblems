@@ -11,5 +11,485 @@
       "csharp"
     ],
     "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "add-two-numbers",
+    "title": "Add Two Numbers",
+    "difficulty": "Medium",
+    "topics": [
+      "Linked List",
+      "Math",
+      "Recursion"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "longest-substring-without-repeating-characters",
+    "title": "Longest Substring Without Repeating Characters",
+    "difficulty": "Medium",
+    "topics": [
+      "Hash Table",
+      "String",
+      "Sliding Window"
+    ],
+    "languages": [
+      "c"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "remove-duplicates-from-sorted-array",
+    "title": "Remove Duplicates from Sorted Array",
+    "difficulty": "Easy",
+    "topics": [
+      "Array",
+      "Two Pointers"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "remove-element",
+    "title": "Remove Element",
+    "difficulty": "Easy",
+    "topics": [
+      "Array",
+      "Two Pointers"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "search-insert-position",
+    "title": "Search Insert Position",
+    "difficulty": "Easy",
+    "topics": [
+      "Array",
+      "Binary Search"
+    ],
+    "languages": [
+      "c"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "valid-sudoku",
+    "title": "Valid Sudoku",
+    "difficulty": "Medium",
+    "topics": [
+      "Array",
+      "Hash Table",
+      "Matrix"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "sudoku-solver",
+    "title": "Sudoku Solver",
+    "difficulty": "Hard",
+    "topics": [
+      "Array",
+      "Hash Table",
+      "Backtracking",
+      "Matrix"
+    ],
+    "languages": [
+      "python"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "jump-game-ii",
+    "title": "Jump Game II",
+    "difficulty": "Medium",
+    "topics": [
+      "Array",
+      "Dynamic Programming",
+      "Greedy"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "spiral-matrix",
+    "title": "Spiral Matrix",
+    "difficulty": "Medium",
+    "topics": [
+      "Array",
+      "Matrix",
+      "Simulation"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "jump-game",
+    "title": "Jump Game",
+    "difficulty": "Medium",
+    "topics": [
+      "Array",
+      "Dynamic Programming",
+      "Greedy"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "climbing-stairs",
+    "title": "Climbing Stairs",
+    "difficulty": "Easy",
+    "topics": [
+      "Math",
+      "Dynamic Programming",
+      "Memoization"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "remove-duplicates-from-sorted-array-ii",
+    "title": "Remove Duplicates from Sorted Array II",
+    "difficulty": "Medium",
+    "topics": [
+      "Array",
+      "Two Pointers"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "merge-sorted-array",
+    "title": "Merge Sorted Array",
+    "difficulty": "Easy",
+    "topics": [
+      "Array",
+      "Two Pointers",
+      "Sorting"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "same-tree",
+    "title": "Same Tree",
+    "difficulty": "Easy",
+    "topics": [
+      "Tree",
+      "Depth-First Search",
+      "Breadth-First Search",
+      "Binary Tree"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "maximum-depth-of-binary-tree",
+    "title": "Maximum Depth of Binary Tree",
+    "difficulty": "Easy",
+    "topics": [
+      "Tree",
+      "Depth-First Search",
+      "Breadth-First Search",
+      "Binary Tree"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "flatten-binary-tree-to-linked-list",
+    "title": "Flatten Binary Tree to Linked List",
+    "difficulty": "Medium",
+    "topics": [
+      "Linked List",
+      "Stack",
+      "Tree",
+      "Depth-First Search",
+      "Binary Tree"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "best-time-to-buy-and-sell-stock",
+    "title": "Best Time to Buy and Sell Stock",
+    "difficulty": "Easy",
+    "topics": [
+      "Array",
+      "Dynamic Programming"
+    ],
+    "languages": [
+      "c"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "best-time-to-buy-and-sell-stock-ii",
+    "title": "Best Time to Buy and Sell Stock II",
+    "difficulty": "Medium",
+    "topics": [
+      "Array",
+      "Dynamic Programming",
+      "Greedy"
+    ],
+    "languages": [
+      "c"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "valid-palindrome",
+    "title": "Valid Palindrome",
+    "difficulty": "Easy",
+    "topics": [
+      "Two Pointers",
+      "String"
+    ],
+    "languages": [
+      "c"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "sum-root-to-leaf-numbers",
+    "title": "Sum Root to Leaf Numbers",
+    "difficulty": "Medium",
+    "topics": [
+      "Tree",
+      "Depth-First Search",
+      "Binary Tree"
+    ],
+    "languages": [
+      "chsarp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "two-sum-ii-input-array-is-sorted",
+    "title": "Two Sum II - Input Array Is Sorted",
+    "difficulty": "Medium",
+    "topics": [
+      "Array",
+      "Two Pointers",
+      "Binary Search"
+    ],
+    "languages": [
+      "c",
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "majority-element",
+    "title": "Majority Element",
+    "difficulty": "Easy",
+    "topics": [
+      "Array",
+      "Hash Table",
+      "Divide and Conquer",
+      "Sorting",
+      "Counting"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "combine-two-tables",
+    "title": "Combine Two Tables",
+    "difficulty": "Easy",
+    "topics": [
+      "Database"
+    ],
+    "languages": [
+      "mysql"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "department-top-three-salaries",
+    "title": "Department Top Three Salaries",
+    "difficulty": "Hard",
+    "topics": [
+      "Database"
+    ],
+    "languages": [
+      "mysql"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "rotate-array",
+    "title": "Rotate Array",
+    "difficulty": "Medium",
+    "topics": [
+      "Array",
+      "Math",
+      "Two Pointers"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "isomorphic-strings",
+    "title": "Isomorphic Strings",
+    "difficulty": "Easy",
+    "topics": [
+      "Hash Table",
+      "String"
+    ],
+    "languages": [
+      "chsarp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "minimum-size-subarray-sum",
+    "title": "Minimum Size Subarray Sum",
+    "difficulty": "Medium",
+    "topics": [
+      "Array",
+      "Binary Search",
+      "Sliding Window",
+      "Prefix Sum"
+    ],
+    "languages": [
+      "c"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "valid-anagram",
+    "title": "Valid Anagram",
+    "difficulty": "Easy",
+    "topics": [
+      "Hash Table",
+      "String",
+      "Sorting"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "trips-and-users",
+    "title": "Trips and Users",
+    "difficulty": "Hard",
+    "topics": [
+      "Database"
+    ],
+    "languages": [
+      "mysql"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "h-index",
+    "title": "H-Index",
+    "difficulty": "Medium",
+    "topics": [
+      "Array",
+      "Sorting",
+      "Counting Sort"
+    ],
+    "languages": [
+      "c"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "is-subsequence",
+    "title": "Is Subsequence",
+    "difficulty": "Easy",
+    "topics": [
+      "Two Pointers",
+      "String",
+      "Dynamic Programming"
+    ],
+    "languages": [
+      "c"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "find-customer-referee",
+    "title": "Find Customer Referee",
+    "difficulty": "Easy",
+    "topics": [
+      "Database"
+    ],
+    "languages": [
+      "mysql"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "big-countries",
+    "title": "Big Countries",
+    "difficulty": "Easy",
+    "topics": [
+      "Database"
+    ],
+    "languages": [
+      "mysql"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "recyclable-and-low-fat-products",
+    "title": "Recyclable and Low Fat Products",
+    "difficulty": "Easy",
+    "topics": [
+      "Database"
+    ],
+    "languages": [
+      "mysql"
+    ],
+    "status": "solved-and-upgrading"
+  },
+  {
+    "slug": "xor-after-range-multiplication-queries-i",
+    "title": "XOR After Range Multiplication Queries I",
+    "difficulty": "Medium",
+    "topics": [
+      "Array",
+      "Divide and Conquer",
+      "Simulation"
+    ],
+    "languages": [
+      "csharp"
+    ],
+    "status": "solved-and-upgrading"
   }
 ]
