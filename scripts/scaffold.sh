@@ -12,7 +12,7 @@ PROB_DIR="$REPO_ROOT/problems/$SLUG"
 
 if [[ -d "$PROB_DIR" ]]; then
     echo "[scaffold] Directory already exists: $PROB_DIR" >&2
-    echo "[scaffold] Use gen_makefile.sh or gen_readme_problem.sh --force to update individual files." >&2
+    # echo "[scaffold] Use gen_makefile.sh or gen_readme_problem.sh --force to update individual files." >&2
     exit 1
 fi
 
@@ -98,18 +98,18 @@ for lang in "${LANGS[@]}"; do
     case "$lang" in
         c)
             printf '%s' "$STUB_C"    > "$PROB_DIR/solution.c"
-            printf '%s' "$TEST_C"    > "$PROB_DIR/test_solution.c"
-            echo "[scaffold] Created solution.c + test_solution.c"
+            #printf '%s' "$TEST_C"    > "$PROB_DIR/test_solution.c"
+            echo "[scaffold] Created solution.c" # + test_solution.c"
             ;;
         cpp)
             printf '%s' "$STUB_CPP"  > "$PROB_DIR/solution.cpp"
-            printf '%s' "$TEST_CPP"  > "$PROB_DIR/test_solution.cpp"
-            echo "[scaffold] Created solution.cpp + test_solution.cpp"
+            #printf '%s' "$TEST_CPP"  > "$PROB_DIR/test_solution.cpp"
+            echo "[scaffold] Created solution.cpp" # + test_solution.cpp"
             ;;
         python)
             printf '%s' "$STUB_PY"   > "$PROB_DIR/solution.py"
-            printf '%s' "$TEST_PY"   > "$PROB_DIR/solution_test.py"
-            echo "[scaffold] Created solution.py + solution_test.py"
+            #printf '%s' "$TEST_PY"   > "$PROB_DIR/solution_test.py"
+            echo "[scaffold] Created solution.py" # + solution_test.py"
             ;;
         csharp)
             printf '%s' "$STUB_CS"   > "$PROB_DIR/solution.cs"
@@ -125,5 +125,5 @@ for lang in "${LANGS[@]}"; do
     esac
 done
 
-"$SCRIPT_DIR/gen_makefile.sh" "$SLUG"
+# "$SCRIPT_DIR/gen_makefile.sh" "$SLUG"
 "$SCRIPT_DIR/gen_readme_problem.sh" "$SLUG"
