@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REQUIRED=(curl jq python3)
-OPTIONAL=(gcc g++ pytest mysql)
+OPTIONAL=(gcc g++ pytest mysql rustc cargo)
 OPTIONAL_CSHARP=(dotnet mcs)
 
 fail=0

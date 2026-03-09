@@ -61,6 +61,14 @@ STUB_SQL='-- TODO: write SQL query below
 -- Problem: '"$SLUG"'
 '
 
+STUB_RS='// TODO: replace with actual function signature from problem
+use std::io;
+
+fn main() {
+    println!("Hello, world!");
+}
+'
+
 TEST_C='#include <stdio.h>
 #include <assert.h>
 
@@ -118,6 +126,10 @@ for lang in "${LANGS[@]}"; do
         mysql)
             printf '%s' "$STUB_SQL"  > "$PROB_DIR/solution.sql"
             echo "[scaffold] Created solution.sql"
+            ;;
+        rust)
+            printf '%s' "$STUB_RS"  > "$PROB_DIR/solution.rs"
+            echo "[scaffold] Created solution.rs"
             ;;
         *)
             echo "[scaffold] Unknown language: $lang (supported: c cpp python csharp mysql)" >&2

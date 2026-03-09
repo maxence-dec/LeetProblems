@@ -24,7 +24,7 @@ usage_new() {
     echo "Command new"
     echo "Add a problem, generate files and update readme/metadata"
     echo "Usage:    leet-problem new <leetcode-url> [lang...]"
-    echo "Languages: c  cpp  python  csharp  mysql"
+    echo "Languages: c  cpp  python  csharp  mysql rust"
     echo "Example: leet-problem new https://leetcode.com/problems/two-sum/ c cpp"
 }
 

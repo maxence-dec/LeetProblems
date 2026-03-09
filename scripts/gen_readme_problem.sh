@@ -50,6 +50,7 @@ LANGS=""
 [[ -f "$PROB_DIR/solution.py" ]]  && LANGS="$LANGS Python,"
 [[ -f "$PROB_DIR/solution.cs" ]]  && LANGS="$LANGS C#,"
 [[ -f "$PROB_DIR/solution.sql" ]] && LANGS="$LANGS MySQL,"
+[[ -f "$PROB_DIR/solution.rs" ]] && LANGS="$LANGS Rust,"
 LANGS="${LANGS%,}"
 
 cat > "$README" <<EOF
@@ -83,6 +84,7 @@ for lang_file in solution.c solution.cpp solution.py solution.cs solution.sql; d
             solution.py)  echo -e "\n### Python\n" >> "$README" ;;
             solution.cs)  echo -e "\n### C#\n"  >> "$README" ;;
             solution.sql) echo -e "\n### MySQL\n" >> "$README" ;;
+            solution.rs) echo -e "\n### Rust\n" >> "$README" ;;
         esac
     fi
 done
