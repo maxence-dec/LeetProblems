@@ -43,3 +43,4 @@
 | [Recyclable and Low Fat Products](problems/recyclable-and-low-fat-products/README.md) | Easy | Database | mysql | solved-and-upgrading |
 | [XOR After Range Multiplication Queries I](problems/xor-after-range-multiplication-queries-i/README.md) | Medium | Array, Divide and Conquer, Simulation | csharp | solved-and-upgrading |
 | [XOR After Range Multiplication Queries II](problems/xor-after-range-multiplication-queries-ii/README.md) | Hard | Array, Divide and Conquer | csharp | abandoned |
+| [Roman to Integer](problems/roman-to-integer/README.md) | Easy | Hash Table, Math, String | rust | in-progress |

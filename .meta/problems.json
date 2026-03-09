@@ -504,5 +504,19 @@
       "csharp"
     ],
     "status": "abandoned"
+  },
+  {
+    "slug": "roman-to-integer",
+    "title": "Roman to Integer",
+    "difficulty": "Easy",
+    "topics": [
+      "Hash Table",
+      "Math",
+      "String"
+    ],
+    "languages": [
+      "rust"
+    ],
+    "status": "in-progress"
   }
 ]
