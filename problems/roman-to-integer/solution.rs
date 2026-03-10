@@ -1,7 +1,7 @@
 impl Solution {
     pub fn roman_to_int(s: String) -> i32 {
         let mut result = 0;
-        let mut ref_value = 0;
+        let mut highest_symbol = 0;
         for symbol in s.chars().rev() {
             let value = match symbol {
                 'I' => 1,
@@ -11,11 +11,11 @@ impl Solution {
                 'C' => 100,
                 'D' => 500,
                 'M' => 1000,
-                _ => 0,
+                _ => panic!(),
             };
 
-            if value >= ref_value {
-                ref_value = value;
+            if value >= highest_symbol {
+                highest_symbol = value;
                 result += value;
             }
             else{ result -= value; }
