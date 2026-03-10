@@ -29,11 +29,11 @@ Constraints:
 
 ## First Intuition
 
-Minus or plus the next symbol depend on the hightest value yet seen.
+Minus or plus the next symbol depends on the highest value yet seen when parsing string from right to left.
 
 ## Notable Issues
 
-String in Rust are a pain.
+String in Rust don't have an implementation similare to IEnumerable in C#, had to use `.chars()` to iterate through.
 
 ## Complexity
 
