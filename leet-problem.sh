@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # shellcheck source=./scripts/constants.sh
+# shellcheck source=./scripts/lib.sh
 
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/scripts" && pwd)"
 source "$SCRIPT_DIR/constants.sh"
+source "$SCRIPT_DIR/lib.sh"
 
 usage_intro(){
     local exit_after="${1:-0}"
@@ -57,7 +59,7 @@ case "$FUNCTION_ARG" in
                 usage_new 1
             else
                 echo "[leet-problem] Adding new problem"
-                "$SCRIPT_DIR/new_problem.sh" "$@"
+                "$SCRIPT_DIR/lib.sh" "$@"
             fi
             ;;
         status)
@@ -65,7 +67,7 @@ case "$FUNCTION_ARG" in
                 usage_status 1
             else
                 echo "[leet-problem] Updating status"
-                "$SCRIPT_DIR/status_update.sh" "$@"
+                "$SCRIPT_DIR/lib.sh" "$@"
             fi
             ;;
         --help)
