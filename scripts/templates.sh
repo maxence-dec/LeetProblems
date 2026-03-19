@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2034 #Everything is exported, no unused alert needed.
+
+#Import safe guard
 [[ -n "${_TEMPLATES_LOADED:-}" ]] && return 0
 _TEMPLATES_LOADED=1
 
@@ -19,7 +22,7 @@ using namespace std;
 class Solution {
 public:
     int solution(vector<int>& nums) {
-        return 0;
+        return 0;SC2034
     }
 };
 '
