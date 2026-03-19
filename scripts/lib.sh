@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SLUG="${1:?Usage: fetch_problem.sh <slug>}"
-CACHE_DIR="/tmp/lc_cache"
-CACHE_FILE="$CACHE_DIR/${SLUG}.json"
+SLUG=""
 
 lp_fetch_problem(){
+    CACHE_DIR="/tmp/lc_cache"
+    CACHE_FILE="$CACHE_DIR/${SLUG}.json"
     mkdir -p "$CACHE_DIR"
     if [[ -f "$CACHE_FILE" ]]; then
         cat "$CACHE_FILE"
