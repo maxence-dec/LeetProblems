@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# shellcheck source=./scripts/constants.sh
+# shellcheck source=./scripts/template.sh
 
-SLUG=""
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/constants.sh"
+source "$SCRIPT_DIR/template.sh"
 
 lp_fetch_problem(){
     CACHE_DIR="/tmp/lc_cache"
@@ -48,14 +52,8 @@ EOF
 
 
 lp_scaffold(){
-    SLUG="${1:?Usage: scaffold.sh <slug> <lang...>}"
-    shift
     LANGS=("$@")
-    [[ ${#LANGS[@]} -eq 0 ]] && { echo "Usage: scaffold.sh <slug> <lang...>  (c cpp python csharp mysql)" >&2; exit 1; }
-
-    REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-    SCRIPT_DIR="$REPO_ROOT/scripts"
-    PROB_DIR="$REPO_ROOT/problems/$SLUG"
+    [[ ${#LANGS[@]} -eq 0 ]] && exit 1;
 
     if [[ -d "$PROB_DIR" ]]; then
         echo "[scaffold] Directory already exists: $PROB_DIR" >&2
@@ -66,7 +64,7 @@ lp_scaffold(){
     mkdir -p "$PROB_DIR"
     echo "[scaffold] Created: $PROB_DIR"
 
-    "$SCRIPT_DIR/fetch_problem.sh" "$SLUG" > /dev/null
+    lp_fetch_problem
 
     for lang in "${LANGS[@]}"; do
         case "$lang" in
@@ -104,20 +102,11 @@ lp_scaffold(){
     done
 
     # "$SCRIPT_DIR/gen_makefile.sh" "$SLUG"
-    "$SCRIPT_DIR/gen_readme_problem.sh" "$SLUG"
+    gen_readme_problem
 
 }
 
 lp_gen_readme_problem(){
-    SLUG="${1:?Usage: gen_readme_problem.sh <slug> [--force]}"
-    FORCE=0
-    [[ "${2:-}" == "--force" ]] && FORCE=1
-
-    REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-    PROB_DIR="$REPO_ROOT/problems/$SLUG"
-    README="$PROB_DIR/README.md"
-    SCRIPT_DIR="$REPO_ROOT/scripts"
-
     [[ -d "$PROB_DIR" ]] || { echo "[gen_readme_problem] Directory not found: $PROB_DIR" >&2; exit 1; }
 
     ANALYSIS_SECTIONS=("## First Intuition" "## Notable Issues" "## Post-Exercise" "## References" "## Implementation Notes")
@@ -137,35 +126,34 @@ lp_gen_readme_problem(){
         return 1
     }
 
-    if has_content "$README" && [[ $FORCE -eq 0 ]]; then
+    if has_content "$README_PROBLEM" && [[ $FORCE -eq 0 ]]; then
         echo "[gen_readme_problem] README has hand-written content. Use --force to overwrite." >&2
         echo "[gen_readme_problem] Diff preview:" >&2
         exit 1
     fi
 
-    CACHE_FILE="/tmp/lc_cache/${SLUG}.json"
     if [[ ! -f "$CACHE_FILE" ]]; then
-        "$SCRIPT_DIR/fetch_problem.sh" "$SLUG" > /dev/null
+        lp_fetch_problem
     fi
 
     TITLE=$(jq -r '.title' "$CACHE_FILE")
     DIFFICULTY=$(jq -r '.difficulty' "$CACHE_FILE")
     TOPICS=$(jq -r '[.topicTags[].name] | join(", ")' "$CACHE_FILE")
 
-    LANGS=""
-    [[ -f "$PROB_DIR/solution.c" ]]   && LANGS="$LANGS C,"
-    [[ -f "$PROB_DIR/solution.cpp" ]] && LANGS="$LANGS C++,"
-    [[ -f "$PROB_DIR/solution.py" ]]  && LANGS="$LANGS Python,"
-    [[ -f "$PROB_DIR/solution.cs" ]]  && LANGS="$LANGS C#,"
-    [[ -f "$PROB_DIR/solution.sql" ]] && LANGS="$LANGS MySQL,"
-    [[ -f "$PROB_DIR/solution.rs" ]] && LANGS="$LANGS Rust,"
-    LANGS="${LANGS%,}"
+    LANGS_README=""
+    [[ -f "$PROB_DIR/solution.c" ]]   && LANGS_README="$LANGS_README C,"
+    [[ -f "$PROB_DIR/solution.cpp" ]] && LANGS_README="$LANGS_README C++,"
+    [[ -f "$PROB_DIR/solution.py" ]]  && LANGS_README="$LANGS_README Python,"
+    [[ -f "$PROB_DIR/solution.cs" ]]  && LANGS_README="$LANGS_README C#,"
+    [[ -f "$PROB_DIR/solution.sql" ]] && LANGS_README="$LANGS_README MySQL,"
+    [[ -f "$PROB_DIR/solution.rs" ]] && LANGS_README="$LANGS_README Rust,"
+    LANGS_README="${LANGS_README%,}"
 
-cat > "$README" <<EOF
+cat > "$README_PROBLEM" <<EOF
 # ${TITLE} — ${DIFFICULTY}
 
 **Topics:** ${TOPICS}
-**Language.s:**${LANGS}
+**Language.s:**${LANGS_README}
 
 ## Problem
 
@@ -187,30 +175,26 @@ EOF
     for lang_file in solution.c solution.cpp solution.py solution.cs solution.sql; do
         if [[ -f "$PROB_DIR/$lang_file" ]]; then
             case "$lang_file" in
-                solution.c)   echo -e "\n### C\n"   >> "$README" ;;
-                solution.cpp) echo -e "\n### C++\n" >> "$README" ;;
-                solution.py)  echo -e "\n### Python\n" >> "$README" ;;
-                solution.cs)  echo -e "\n### C#\n"  >> "$README" ;;
-                solution.sql) echo -e "\n### MySQL\n" >> "$README" ;;
-                solution.rs) echo -e "\n### Rust\n" >> "$README" ;;
+                solution.c)   echo -e "\n### C\n"   >> "$README_PROBLEM" ;;
+                solution.cpp) echo -e "\n### C++\n" >> "$README_PROBLEM" ;;
+                solution.py)  echo -e "\n### Python\n" >> "$README_PROBLEM" ;;
+                solution.cs)  echo -e "\n### C#\n"  >> "$README_PROBLEM" ;;
+                solution.sql) echo -e "\n### MySQL\n" >> "$README_PROBLEM" ;;
+                solution.rs) echo -e "\n### Rust\n" >> "$README_PROBLEM" ;;
             esac
         fi
     done
 
-    echo "[gen_readme_problem] Written: $README"
+    echo "[gen_readme_problem] Written: $README_PROBLEM"
 
 }
 
 lp_gen_readme_root(){
-    REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-    META="$REPO_ROOT/.meta/problems.json"
-    README="$REPO_ROOT/README.md"
-
     [[ -f "$META" ]] || { echo "[gen_readme_root] .meta/problems.json not found" >&2; exit 1; }
 
     INTRO=""
-    if [[ -f "$README" ]]; then
-        INTRO=$(awk '/<!-- INTRO_START -->/{found=1} found{print} /<!-- INTRO_END -->/{exit}' "$README")
+    if [[ -f "$README_ROOT" ]]; then
+        INTRO=$(awk '/<!-- INTRO_START -->/{found=1} found{print} /<!-- INTRO_END -->/{exit}' "$README_ROOT")
     fi
 
     if [[ -z "$INTRO" ]]; then
@@ -229,7 +213,7 @@ EOF
         "| [\(.title)](problems/\(.slug)/README.md) | \(.difficulty) | \(.topics | join(", ")) | \(.languages | join(", ")) | \(.status) |"
     ' "$META")
 
-cat > "$README" <<EOF
+cat > "$README_ROOT" <<EOF
 ${INTRO}
 
 ## Problems
@@ -239,19 +223,26 @@ ${TABLE_SEP}
 ${TABLE_ROWS}
 EOF
 
-    echo "[gen_readme_root] Written: $README"
+    echo "[gen_readme_root] Written: $README_ROOT"
 }
 
 lp_new_problem(){
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    source "$SCRIPT_DIR/constants.sh"
+    REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+    SCRIPT_DIR="$REPO_ROOT/scripts"
+    PROB_DIR="$REPO_ROOT/problems/$SLUG"
+
+    SLUG="${1:?Usage: gen_readme_problem.sh <slug> [--force]}"
+    FORCE=0
+    [[ "${2:-}" == "--force" ]] && FORCE=1
+
+    README_PROBLEM="$PROB_DIR/README.md"
+
+    META="$REPO_ROOT/.meta/problems.json"
+    README_ROOT="$REPO_ROOT/README.md"
 
     URL="$1"
     shift
     LANGS=("$@")
-
-    REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-    META="$REPO_ROOT/.meta/problems.json"
 
      # --- extract slug from URL ---
     SLUG=$(echo "$URL" | sed -E 's|https?://leetcode\.com/problems/([^/]+)/?.*|\1|')
@@ -267,7 +258,7 @@ lp_new_problem(){
     "$SCRIPT_DIR/check_env.sh"
 
      # --- scaffold problem directory ---
-    "$SCRIPT_DIR/scaffold.sh" "$SLUG" "${LANGS[@]}"
+    lp_scaffold "${LANGS[@]}"
 
      # --- update .meta/problems.json ---
     CACHE_FILE="/tmp/lc_cache/${SLUG}.json"
@@ -297,7 +288,7 @@ lp_new_problem(){
     fi
 
      # --- regenerate root README ---
-    "$SCRIPT_DIR/gen_readme_root.sh"
+    gen_readme_root
 
     echo ""
     echo "[new-problem] Done."
@@ -308,7 +299,6 @@ lp_new_problem(){
 
 lp_status_update(){
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    source "$SCRIPT_DIR/constants.sh"
 
     NEW_STATUS="${STATUS[$2]:-}"
     [[ -z "$NEW_STATUS" ]] && { echo "Unknown status code: $2"; exit 1; }
