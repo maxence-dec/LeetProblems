@@ -1,0 +1,235 @@
+# MAINTENANCE NOTES
+#
+# ENVIRONMENT SENSITIVITY
+#   EXPECTED_NEW and EXPECTED_NEW_DUPLICATE contain "[missing optional] pytest"
+#   If pytest is installed, these tests fail — remove that line from both defines.
+#   Same applies if any other optional tool is installed or removed.
+#
+# REPO_ROOT
+#   Evaluated at parse time via $(shell pwd), not at recipe execution time.
+#   Always run make from repo root — subdirectory invocations produce wrong paths
+#   in expected strings containing absolute paths.
+#
+# MAKE define/endef LEADING NEWLINE
+#   define blocks include a leading newline before the first content line.
+#   The compare macro uses echo "$$VAR" which preserves it.
+#   If a test fails with a diff showing only a leading blank line difference,
+#   remove the blank line between define EXPECTED_X and the first content line.
+#
+# TEST ORDERING
+#   test-status-not-found must run before test-new (slug must be absent).
+#   test-status-update and test-new-duplicate depend on test-new having run.
+#   Never run status or duplicate targets in isolation without running test-new first.
+#
+# CLEAN-TEST
+#   Uses git restore — only restores files to their last committed state.
+#   If META or README.md have uncommitted changes before running tests,
+#   those changes are lost on clean. Stash before running the full suite.
+#
+# COMPARE MACRO ARGUMENT 2
+#   Takes the exported variable name as a bare word, not shell-expanded.
+#   Correct:   $(call compare, cmd, EXPECTED_FOO, label)
+#   Incorrect: $(call compare, cmd, $$EXPECTED_FOO, label)
+#   Make passes it as a string which bash then expands with $$ in the recipe.
+#
+# ADDING A NEW TEST
+#   1. Capture exact output from terminal into a define block.
+#   2. Export the variable below the define.
+#   3. Add a target using the compare macro.
+#   4. Add the target to the dependency list of test: or the relevant group target.
+#   5. If the test has side effects, note its ordering dependency here.
+
+SHELL  := /bin/bash
+LP     := ./leet-problem.sh
+REPO_ROOT := $(shell pwd)
+
+TEST_SLUG  := palindrome-number
+TEST_URL   := https://leetcode.com/problems/$(TEST_SLUG)/
+TEST_LANGS := python c mysql
+PROB_DIR   := problems/$(TEST_SLUG)
+META       := .meta/problems.json
+
+# ---------------------------------------------------------------------------
+# Expected outputs
+# ---------------------------------------------------------------------------
+
+define EXPECTED_NO_ARGS
+leet-problem - custom CLI tool for LeetCode file management
+Usage: leet-problem [--help]
+                    <command> [<arguments>]
+  new     Add a problem, generate files and update readme/metadata
+  status  Update a problem status in readme/metadata
+leet-problem <command> --help
+  Get details for a specific command use
+endef
+
+define EXPECTED_NEW_USAGE
+leet-problem - custom CLI tool for LeetCode file management
+
+Command new
+Add a problem, generate files and update readme/metadata
+Usage:    leet-problem new <leetcode-url> [lang...]
+Languages: c  cpp  python  csharp  mysql rust
+Example: leet-problem new https://leetcode.com/problems/two-sum/ c cpp
+endef
+
+define EXPECTED_STATUS_USAGE
+leet-problem - custom CLI tool for LeetCode file management
+
+Command status
+Update a problem status in readme/metadata
+Usage:    leet-problem status <slug | url> <value>
+Values:
+  0 — new
+  1 — in-progress
+  2 — solved
+  3 — abandoned
+  4 — solved-and-upgrading
+Example: leet-problem status insert-delete-getrandom-o1 2
+endef
+
+define EXPECTED_UNKNOWN_ARG
+[leet-problem] Unknown argument, refer to --helpproblems/palindrome-number
+endef
+
+define EXPECTED_STATUS_NOT_FOUND
+[leet-problem] Updating status
+[status_update] Slug $(TEST_SLUG) not found in problems.json — skipping JSON update
+endef
+
+define EXPECTED_NEW
+[leet-problem] Adding new problem
+[new-problem] Slug: $(TEST_SLUG)
+[new-problem] Languages: python c mysql
+[missing optional] pytest
+[scaffold] Created: $(REPO_ROOT)/problems/$(TEST_SLUG)
+[scaffold] Created solution.py
+[scaffold] Created solution.c
+[scaffold] Created solution.sql
+[gen_readme_problem] Written: $(REPO_ROOT)/problems/$(TEST_SLUG)/README.md
+[new-problem] Added to problems.json
+[gen_readme_root] Written: $(REPO_ROOT)/README.md
+
+[new-problem] Done.
+  Problem dir : $(REPO_ROOT)/problems/$(TEST_SLUG)/
+  Next steps  : edit problems/$(TEST_SLUG)/README.md, write solution, run 'make test'
+
+endef
+
+define EXPECTED_STATUS_UPDATE
+[leet-problem] Updating status
+[status_update]  problems.json: '$(TEST_SLUG)' status: 'new' -> 'in-progress'
+[gen_readme_root] Written: $(REPO_ROOT)/README.md
+endef
+
+define EXPECTED_NEW_DUPLICATE
+[leet-problem] Adding new problem
+[new-problem] Slug: $(TEST_SLUG)
+[new-problem] Languages: python c mysql
+[missing optional] pytest
+[scaffold] Directory already exists: $(REPO_ROOT)/problems/$(TEST_SLUG)
+endef
+
+export EXPECTED_NO_ARGS
+export EXPECTED_NEW_USAGE
+export EXPECTED_STATUS_USAGE
+export EXPECTED_UNKNOWN_ARG
+export EXPECTED_STATUS_NOT_FOUND
+export EXPECTED_NEW
+export EXPECTED_STATUS_UPDATE
+export EXPECTED_NEW_DUPLICATE
+
+# ---------------------------------------------------------------------------
+.PHONY: test test-usage test-no-args test-new-usage test-status-usage \
+        test-unknown-arg test-status-not-found \
+        test-new test-status-update test-new-duplicate \
+        pre-check clean-test
+
+test: pre-check test-usage test-status-not-found test-new test-status-update test-new-duplicate clean-test
+	@echo ""
+	@echo "=== All tests passed ==="
+
+# ---------------------------------------------------------------------------
+
+define compare
+	@actual=$$($(1) 2>&1 || true); \
+	expected=$$(echo "$$$(2)"); \
+	if [[ "$$actual" == "$$expected" ]]; then \
+		echo "[PASS] $(3)"; \
+	else \
+		echo "[FAIL] $(3)"; \
+		diff <(echo "$$expected") <(echo "$$actual"); \
+		exit 1; \
+	fi
+endef
+
+# ---------------------------------------------------------------------------
+# pre-check
+# ---------------------------------------------------------------------------
+pre-check:
+	@echo "--- pre-check ---"
+	@[[ -f "$(LP)" ]] \
+		|| { echo "[ABORT] Entry point not found: $(LP)"; exit 1; }
+	@[[ ! -d "$(PROB_DIR)" ]] \
+		|| { echo "[ABORT] $(PROB_DIR) already exists — choose a different TEST_SLUG"; exit 1; }
+	@jq -e --arg s "$(TEST_SLUG)" \
+		'map(select(.slug == $$s)) | length == 0' $(META) > /dev/null \
+		|| { echo "[ABORT] $(TEST_SLUG) already in problems.json — choose a different TEST_SLUG"; exit 1; }
+	@echo "[OK] pre-check passed"
+
+# ---------------------------------------------------------------------------
+# Usage tests — no side effects
+# ---------------------------------------------------------------------------
+test-usage: test-no-args test-new-usage test-status-usage test-unknown-arg
+	@echo ""
+
+test-no-args:
+	@echo "--- test-usage ---"
+	$(call compare,$(LP),EXPECTED_NO_ARGS,no-args)
+
+test-new-usage:
+	$(call compare,$(LP) new,EXPECTED_NEW_USAGE,new usage)
+
+test-status-usage:
+	$(call compare,$(LP) status,EXPECTED_STATUS_USAGE,status usage)
+
+test-unknown-arg:
+	$(call compare,$(LP) arg,EXPECTED_UNKNOWN_ARG,unknown arg)
+
+# ---------------------------------------------------------------------------
+# Status on missing slug — no side effects
+# ---------------------------------------------------------------------------
+test-status-not-found:
+	@echo "--- test-status-not-found ---"
+	$(call compare,$(LP) status $(TEST_SLUG) 1,EXPECTED_STATUS_NOT_FOUND,status not found)
+
+# ---------------------------------------------------------------------------
+# New problem — requires network, creates files
+# ---------------------------------------------------------------------------
+test-new:
+	@echo "--- test-new ---"
+	$(call compare,$(LP) new $(TEST_URL) $(TEST_LANGS),EXPECTED_NEW,new problem)
+
+# ---------------------------------------------------------------------------
+# Status update — depends on test-new
+# ---------------------------------------------------------------------------
+test-status-update:
+	@echo "--- test-status-update ---"
+	$(call compare,$(LP) status $(TEST_SLUG) 1,EXPECTED_STATUS_UPDATE,status update)
+
+# ---------------------------------------------------------------------------
+# Duplicate new — depends on test-new
+# ---------------------------------------------------------------------------
+test-new-duplicate:
+	@echo "--- test-new-duplicate ---"
+	$(call compare,$(LP) new $(TEST_URL) $(TEST_LANGS),EXPECTED_NEW_DUPLICATE,new duplicate)
+
+# ---------------------------------------------------------------------------
+# Cleanup
+# ---------------------------------------------------------------------------
+clean-test:
+	@echo "--- clean-test ---"
+	@rm -rf "$(PROB_DIR)"
+	@git restore $(META) README.md
+	@echo "[clean] Removed $(PROB_DIR)"
+	@echo "[clean] Restored $(META) and README.md"
