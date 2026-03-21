@@ -1,19 +1,18 @@
 #!/usr/bin/env bash
 # shellcheck source=./scripts/constants.sh
-# shellcheck source=./scripts/template.sh
+# shellcheck source=./scripts/templates.sh
 
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/constants.sh"
-source "$SCRIPT_DIR/template.sh"
+source "$SCRIPT_DIR/templates.sh"
 
 lp_fetch_problem(){
     CACHE_DIR="/tmp/lc_cache"
     CACHE_FILE="$CACHE_DIR/${SLUG}.json"
     mkdir -p "$CACHE_DIR"
     if [[ -f "$CACHE_FILE" ]]; then
-        cat "$CACHE_FILE"
-        exit 0
+        return
     fi
 
     QUERY=$(cat <<EOF
@@ -47,7 +46,7 @@ EOF
     fi
 
     echo "$RESPONSE" | jq '.data.question' > "$CACHE_FILE"
-    cat "$CACHE_FILE"
+    #cat "$CACHE_FILE"
 }
 
 
@@ -57,7 +56,6 @@ lp_scaffold(){
 
     if [[ -d "$PROB_DIR" ]]; then
         echo "[scaffold] Directory already exists: $PROB_DIR" >&2
-        # echo "[scaffold] Use gen_makefile.sh or gen_readme_problem.sh --force to update individual files." >&2
         exit 1
     fi
 
@@ -70,18 +68,15 @@ lp_scaffold(){
         case "$lang" in
             c)
                 printf '%s' "$STUB_C"    > "$PROB_DIR/solution.c"
-                #printf '%s' "$TEST_C"    > "$PROB_DIR/test_solution.c"
-                echo "[scaffold] Created solution.c" # + test_solution.c"
+                echo "[scaffold] Created solution.c"
                 ;;
             cpp)
                 printf '%s' "$STUB_CPP"  > "$PROB_DIR/solution.cpp"
-                #printf '%s' "$TEST_CPP"  > "$PROB_DIR/test_solution.cpp"
-                echo "[scaffold] Created solution.cpp" # + test_solution.cpp"
+                echo "[scaffold] Created solution.cpp"
                 ;;
             python)
                 printf '%s' "$STUB_PY"   > "$PROB_DIR/solution.py"
-                #printf '%s' "$TEST_PY"   > "$PROB_DIR/solution_test.py"
-                echo "[scaffold] Created solution.py" # + solution_test.py"
+                echo "[scaffold] Created solution.py"
                 ;;
             csharp)
                 printf '%s' "$STUB_CS"   > "$PROB_DIR/solution.cs"
@@ -101,36 +96,12 @@ lp_scaffold(){
         esac
     done
 
-    # "$SCRIPT_DIR/gen_makefile.sh" "$SLUG"
-    gen_readme_problem
+    lp_gen_readme_problem
 
 }
 
 lp_gen_readme_problem(){
     [[ -d "$PROB_DIR" ]] || { echo "[gen_readme_problem] Directory not found: $PROB_DIR" >&2; exit 1; }
-
-    ANALYSIS_SECTIONS=("## First Intuition" "## Notable Issues" "## Post-Exercise" "## References" "## Implementation Notes")
-
-    has_content() {
-        local file="$1"
-        [[ ! -f "$file" ]] && return 1
-        for section in "${ANALYSIS_SECTIONS[@]}"; do
-            if grep -qF "$section" "$file"; then
-                local next_line
-                next_line=$(grep -A1 -F "$section" "$file" | tail -1)
-                if [[ -n "$next_line" && "$next_line" != "##"* ]]; then
-                    return 0
-                fi
-            fi
-        done
-        return 1
-    }
-
-    if has_content "$README_PROBLEM" && [[ $FORCE -eq 0 ]]; then
-        echo "[gen_readme_problem] README has hand-written content. Use --force to overwrite." >&2
-        echo "[gen_readme_problem] Diff preview:" >&2
-        exit 1
-    fi
 
     if [[ ! -f "$CACHE_FILE" ]]; then
         lp_fetch_problem
@@ -227,29 +198,25 @@ EOF
 }
 
 lp_new_problem(){
-    REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-    SCRIPT_DIR="$REPO_ROOT/scripts"
-    PROB_DIR="$REPO_ROOT/problems/$SLUG"
-
-    SLUG="${1:?Usage: gen_readme_problem.sh <slug> [--force]}"
-    FORCE=0
-    [[ "${2:-}" == "--force" ]] && FORCE=1
-
-    README_PROBLEM="$PROB_DIR/README.md"
-
-    META="$REPO_ROOT/.meta/problems.json"
-    README_ROOT="$REPO_ROOT/README.md"
-
     URL="$1"
     shift
     LANGS=("$@")
 
-     # --- extract slug from URL ---
+    # --- extract slug from URL ---
     SLUG=$(echo "$URL" | sed -E 's|https?://leetcode\.com/problems/([^/]+)/?.*|\1|')
     if [[ "$SLUG" == "$URL" ]]; then
         echo "[new-problem] Could not extract slug from URL: $URL" >&2
         exit 1
     fi
+
+    REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+    SCRIPT_DIR="$REPO_ROOT/scripts"
+    PROB_DIR="$REPO_ROOT/problems/$SLUG"
+
+    README_PROBLEM="$PROB_DIR/README.md"
+
+    META="$REPO_ROOT/.meta/problems.json"
+    README_ROOT="$REPO_ROOT/README.md"
 
     echo "[new-problem] Slug: $SLUG"
     echo "[new-problem] Languages: ${LANGS[*]}"
@@ -288,7 +255,7 @@ lp_new_problem(){
     fi
 
      # --- regenerate root README ---
-    gen_readme_root
+    lp_gen_readme_root
 
     echo ""
     echo "[new-problem] Done."
@@ -303,7 +270,6 @@ lp_status_update(){
     NEW_STATUS="${STATUS[$2]:-}"
     [[ -z "$NEW_STATUS" ]] && { echo "Unknown status code: $2"; exit 1; }
 
-
     INPUT="$1"
     if [[ "$INPUT" == *"://"* ]]; then
         SLUG=$(echo "$INPUT" | sed -E 's|https?://leetcode\.com/problems/([^/]+)/?.*|\1|')
@@ -317,6 +283,7 @@ lp_status_update(){
 
     REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
     META="$REPO_ROOT/.meta/problems.json"
+    README_ROOT="$REPO_ROOT/README.md"
 
     JSON_CONTENT=$(cat "$META")
     MATCH_COUNT=$(echo "$JSON_CONTENT" | jq --arg slug "$SLUG" 'map(select(.slug == $slug)) | length')
@@ -331,7 +298,7 @@ lp_status_update(){
         echo "[status_update]  problems.json: '$SLUG' status: '$OLD_STATUS' -> '$NEW_STATUS'"
 
         # --- regenerate root README ---
-        "$SCRIPT_DIR/gen_readme_root.sh"
+        lp_gen_readme_root
     else
         echo "[status_update] Slug $SLUG not found in problems.json — skipping JSON update"
     fi

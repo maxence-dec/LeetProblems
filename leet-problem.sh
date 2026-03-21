@@ -59,7 +59,7 @@ case "$FUNCTION_ARG" in
                 usage_new 1
             else
                 echo "[leet-problem] Adding new problem"
-                "$SCRIPT_DIR/lib.sh" "$@"
+                lp_new_problem "$@"
             fi
             ;;
         status)
@@ -67,7 +67,7 @@ case "$FUNCTION_ARG" in
                 usage_status 1
             else
                 echo "[leet-problem] Updating status"
-                "$SCRIPT_DIR/lib.sh" "$@"
+                lp_status_update "$@"
             fi
             ;;
         --help)

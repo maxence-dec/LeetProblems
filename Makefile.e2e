@@ -89,7 +89,7 @@ Example: leet-problem status insert-delete-getrandom-o1 2
 endef
 
 define EXPECTED_UNKNOWN_ARG
-[leet-problem] Unknown argument, refer to --helpproblems/palindrome-number
+[leet-problem] Unknown argument, refer to --help
 endef
 
 define EXPECTED_STATUS_NOT_FOUND
