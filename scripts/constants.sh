@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2034 #Everything is exported, no unused alert needed.
+
+#Import safe guard
+[[ -n "${_CONSTANTS_LOADED:-}" ]] && return 0
+_CONSTANTS_LOADED=1
+
 declare -A STATUS
 STATUS[0]="new"                     #Added to repo, no code yet
 STATUS[1]="in-progress"             #Code imported from website and/or in work locally
