@@ -518,5 +518,19 @@
       "rust"
     ],
     "status": "solved"
+  },
+  {
+    "slug": "container-with-most-water",
+    "title": "Container With Most Water",
+    "difficulty": "Medium",
+    "topics": [
+      "Array",
+      "Two Pointers",
+      "Greedy"
+    ],
+    "languages": [
+      "rust"
+    ],
+    "status": "solved"
   }
 ]
