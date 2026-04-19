@@ -532,5 +532,19 @@
       "rust"
     ],
     "status": "solved"
+  },
+  {
+    "slug": "3sum",
+    "title": "3Sum",
+    "difficulty": "Medium",
+    "topics": [
+      "Array",
+      "Two Pointers",
+      "Sorting"
+    ],
+    "languages": [
+      "rust"
+    ],
+    "status": "in-progress"
   }
 ]

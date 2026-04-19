@@ -45,3 +45,4 @@
 | [XOR After Range Multiplication Queries II](problems/xor-after-range-multiplication-queries-ii/README.md) | Hard | Array, Divide and Conquer | csharp | abandoned |
 | [Roman to Integer](problems/roman-to-integer/README.md) | Easy | Hash Table, Math, String | rust | solved |
 | [Container With Most Water](problems/container-with-most-water/README.md) | Medium | Array, Two Pointers, Greedy | rust | solved |
+| [3Sum](problems/3sum/README.md) | Medium | Array, Two Pointers, Sorting | rust | in-progress |
