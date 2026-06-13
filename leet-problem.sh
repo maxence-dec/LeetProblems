@@ -14,8 +14,10 @@ usage_intro(){
     echo "                    <command> [<arguments>]"
     echo "  new     Add a problem, generate files and update readme/metadata"
     echo "  status  Update a problem status in readme/metadata"
-    [[ $1 -eq 1 ]] && echo "leet-problem <command> --help"
-    [[ $1 -eq 1 ]] && echo "  Get details for a specific command use"
+    echo "  alias   Set bash alias as 'lp'"
+    [[ $1 -eq 1 ]] && echo ""
+    [[ $1 -eq 1 ]] && echo "Get details for a specific command use:"
+    [[ $1 -eq 1 ]] && echo "  leet-problem <command> --help"
     [[ $exit_after -eq 1 ]] && exit 1
     echo ""
 }
@@ -25,9 +27,9 @@ usage_new() {
     echo ""
     echo "Command new"
     echo "Add a problem, generate files and update readme/metadata"
-    echo "Usage:    leet-problem new <leetcode-url> [lang...]"
+    echo "Usage:    lp new <leetcode-url> [lang...]"
     echo "Languages: c  cpp  python  csharp  mysql rust"
-    echo "Example: leet-problem new https://leetcode.com/problems/two-sum/ c cpp"
+    echo "Example: lp new https://leetcode.com/problems/two-sum/ c cpp"
 }
 
 usage_status() {
@@ -35,12 +37,12 @@ usage_status() {
     echo ""
     echo "Command status"
     echo "Update a problem status in readme/metadata"
-    echo "Usage:    leet-problem status <slug | url> <value>"
+    echo "Usage:    lp status <slug | url> <value>"
     echo "Values:"
     for code in $(echo "${!STATUS[@]}" | tr ' ' '\n' | sort -n); do
         echo "  $code — ${STATUS[$code]}"
     done
-    echo "Example: leet-problem status insert-delete-getrandom-o1 2"
+    echo "Example: lp status insert-delete-getrandom-o1 2"
 }
 
 usage_all(){
@@ -69,6 +71,10 @@ case "$FUNCTION_ARG" in
                 echo "[leet-problem] Updating status"
                 lp_status_update "$@"
             fi
+            ;;
+        alias)
+            echo "alias lp='${ ( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd ) }/leet-problem.sh'" >> ~/.bashrc
+            echo "Alias added, 'source ~/.bashrc' to refresh terminal"
             ;;
         --help)
             usage_all
